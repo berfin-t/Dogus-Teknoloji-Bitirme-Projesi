@@ -1,7 +1,19 @@
+using BlogApp.Models.BlogAppDbContext;
+using BlogApp.Models.DataSeeder;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<Context>(options =>
+{
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("connection")
+        //sqlOptions => sqlOptions.EnableRetryOnFailure()
+    );
+});
 
 var app = builder.Build();
 
@@ -15,10 +27,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+SeedData.CreateSeedData(app);
 
 app.MapControllerRoute(
     name: "default",
