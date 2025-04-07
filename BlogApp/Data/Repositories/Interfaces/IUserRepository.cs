@@ -1,6 +1,6 @@
 ﻿using BlogApp.Dtos.UserDtos;
 
-namespace BlogApp.Repositories.Interfaces
+namespace BlogApp.Data.Repositories.Interfaces
 {
     public interface IUserRepository
     {

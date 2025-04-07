@@ -1,6 +1,6 @@
 ﻿using BlogApp.Dtos.CategoryDtos;
 
-namespace BlogApp.Repositories.Interfaces
+namespace BlogApp.Data.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {

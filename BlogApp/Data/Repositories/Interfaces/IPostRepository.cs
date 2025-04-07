@@ -1,6 +1,6 @@
 ﻿using BlogApp.Dtos.PostDtos;
 
-namespace BlogApp.Repositories.Interfaces
+namespace BlogApp.Data.Repositories.Interfaces
 {
     public interface IPostRepository
     {

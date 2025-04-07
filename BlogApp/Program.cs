@@ -1,6 +1,8 @@
+using BlogApp.Data.BlogAppDbContext;
+using BlogApp.Data.DataSeeder;
+using BlogApp.Data.Repositories.Implementations.EfCore;
+using BlogApp.Data.Repositories.Interfaces;
 using BlogApp.Mapper;
-using BlogApp.Models.BlogAppDbContext;
-using BlogApp.Models.DataSeeder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +16,13 @@ builder.Services.AddDbContext<Context>(options =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("connection")
-
     );
 });
+
+builder.Services.AddScoped<IPostRepository, EfCorePostRepository>();
+builder.Services.AddScoped<ICategoryRepository, EfCoreCategoryRepository>();
+builder.Services.AddScoped<ICommentRepository, EfCoreCommentRepository>();
+builder.Services.AddScoped<IUserRepository, EfCoreUserRepository>();
 
 var app = builder.Build();
 

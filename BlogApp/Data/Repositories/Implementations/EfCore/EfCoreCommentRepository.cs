@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BlogApp.Data.BlogAppDbContext;
+using BlogApp.Data.Repositories.Interfaces;
 using BlogApp.Dtos.CommentDtos;
 using BlogApp.Entities;
-using BlogApp.Models.BlogAppDbContext;
-using BlogApp.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogApp.Repositories.Implementations.EfCore
+namespace BlogApp.Data.Repositories.Implementations.EfCore
 {
-    public class EfCoreCommentRepository:ICommentRepository
+    public class EfCoreCommentRepository : ICommentRepository
     {
         private readonly Context _context;
         private readonly IMapper _mapper;
@@ -33,7 +33,7 @@ namespace BlogApp.Repositories.Implementations.EfCore
         #endregion
 
         #region Read        
-        public IQueryable<CommentDto> Comments => _context.Comments.AsNoTracking().ProjectTo<CommentDto>(_mapper.ConfigurationProvider); 
+        public IQueryable<CommentDto> Comments => _context.Comments.AsNoTracking().ProjectTo<CommentDto>(_mapper.ConfigurationProvider);
         #endregion
 
         #region Update

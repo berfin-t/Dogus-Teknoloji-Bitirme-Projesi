@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BlogApp.Data.BlogAppDbContext;
+using BlogApp.Data.Repositories.Interfaces;
 using BlogApp.Dtos.PostDtos;
 using BlogApp.Entities;
-using BlogApp.Models.BlogAppDbContext;
-using BlogApp.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogApp.Repositories.Implementations.EfCore
+namespace BlogApp.Data.Repositories.Implementations.EfCore
 {
-    public class EfCorePostRepository:IPostRepository
+    public class EfCorePostRepository : IPostRepository
     {
         private readonly Context _context;
         private readonly IMapper _mapper;
@@ -30,10 +30,19 @@ namespace BlogApp.Repositories.Implementations.EfCore
             postDto.Id = entity.Id;
             return postDto;
         }
-        #endregion
+        #endregion        
 
         #region Read        
-        public IQueryable<PostDto> Posts => _context.Posts.AsNoTracking().ProjectTo<PostDto>(_mapper.ConfigurationProvider);
+        public IQueryable<PostDto> Posts
+        {
+            get
+            {                
+                return _context.Posts
+                    .AsNoTracking()
+                    .Include(p => p.Category) 
+                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider);
+            }
+        }
         #endregion
 
         #region Update

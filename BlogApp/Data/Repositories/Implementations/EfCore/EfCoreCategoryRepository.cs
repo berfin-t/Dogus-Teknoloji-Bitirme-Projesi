@@ -2,11 +2,11 @@
 using AutoMapper;
 using BlogApp.Dtos.CategoryDtos;
 using BlogApp.Entities;
-using BlogApp.Models.BlogAppDbContext;
-using BlogApp.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using BlogApp.Data.BlogAppDbContext;
+using BlogApp.Data.Repositories.Interfaces;
 
-namespace BlogApp.Repositories.Implementations.EfCore
+namespace BlogApp.Data.Repositories.Implementations.EfCore
 {
     public class EfCoreCategoryRepository : ICategoryRepository
     {
@@ -36,7 +36,7 @@ namespace BlogApp.Repositories.Implementations.EfCore
         //AsNoTracking(). ile salt okunur işlemler için izlemeyi devre dışı bırakma
         //Sonuçları doğrudan CategoryDtokullanarak yansıtmakProjectTo , Categorygereksiz veri yüklemeden varlıkları veritabanı düzeyindeki ilgili
         //DTO'lara verimli bir şekilde eşler.
-        public IQueryable<CategoryDto> Categories => _context.Categories.AsNoTracking().ProjectTo<CategoryDto>(_mapper.ConfigurationProvider); 
+        public IQueryable<CategoryDto> Categories => _context.Categories.AsNoTracking().ProjectTo<CategoryDto>(_mapper.ConfigurationProvider);
         #endregion
 
         #region Update

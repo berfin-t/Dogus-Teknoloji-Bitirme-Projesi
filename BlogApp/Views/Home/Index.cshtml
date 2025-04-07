@@ -2,7 +2,73 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model PostViewModel
+
+<div class="container">
+    <div class="row justify-content-center">
+        <section class="col-12 col-md-10 col-lg-8">
+            <div class="bg-white p-3 p-md-4 rounded shadow-sm">
+
+                <section class="row row-cols-1 row-cols-md-2 g-4">
+                    @foreach (var post in Model.Posts)
+                    {
+                        <article class="col">
+                            <a href="@Url.Action("PostDetail", "Home", new { id = post.Id })" class="text-decoration-none">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <img src="@post.Image" class="card-img-top rounded-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Post Image" />
+
+                                    <div class="card-body">
+                                        <h5 class="card-title text-dark fw-bold">@post.Title</h5>
+                                        <p class="card-text text-muted small">@post.Description</p>
+                                    </div>
+
+                                    <footer class="card-footer bg-white border-0">
+                                        <span class="badge bg-gradient bg-danger text-white px-2 py-1">@post.CategoryDto.Name</span>
+                                    </footer>
+                                </div>
+                            </a>
+                        </article>
+                    }
+                </section>
+
+                <nav aria-label="pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        @if (Model.PageNumber > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Önceki</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Önceki</a>
+                            </li>
+                        }
+
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.PageNumber < Model.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Sonraki</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Sonraki</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+
+            </div>
+        </section>
+    </div>
 </div>

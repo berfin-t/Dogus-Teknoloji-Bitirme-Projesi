@@ -1,9 +1,9 @@
-﻿using BlogApp.Entities;
-using BlogApp.Models.BlogAppDbContext;
+﻿using BlogApp.Data.BlogAppDbContext;
+using BlogApp.Entities;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogApp.Models.DataSeeder
+namespace BlogApp.Data.DataSeeder
 {
     public static class SeedData
     {

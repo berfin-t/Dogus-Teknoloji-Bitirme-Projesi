@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace BlogApp.Models.BlogAppDbContext
+namespace BlogApp.Data.BlogAppDbContext
 {
     public class Context : DbContext
     {
@@ -17,10 +17,10 @@ namespace BlogApp.Models.BlogAppDbContext
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Comment>()
-                .HasOne(c => c.Post)  
-                .WithMany(p => p.Comments)  
-                .HasForeignKey(c => c.PostId)  
-                .OnDelete(DeleteBehavior.NoAction);  
+                .HasOne(c => c.Post)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
