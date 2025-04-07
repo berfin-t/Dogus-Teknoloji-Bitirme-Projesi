@@ -1,8 +1,11 @@
+using BlogApp.Mapper;
 using BlogApp.Models.BlogAppDbContext;
 using BlogApp.Models.DataSeeder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(typeof(BlogAppAutoMapperProfile)); 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -11,7 +14,7 @@ builder.Services.AddDbContext<Context>(options =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("connection")
-        //sqlOptions => sqlOptions.EnableRetryOnFailure()
+
     );
 });
 
@@ -28,7 +31,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
 SeedData.CreateSeedData(app);

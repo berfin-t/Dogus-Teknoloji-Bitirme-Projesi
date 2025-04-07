@@ -1,8 +1,10 @@
-﻿using System.Xml.Linq;
+﻿using BlogApp.Dtos.CategoryDtos;
+using BlogApp.Dtos.CommentDtos;
+using BlogApp.Dtos.UserDtos;
 
-namespace BlogApp.Entities
+namespace BlogApp.Dtos.PostDtos
 {
-    public class Post
+    public class PostDto
     {
         public int Id { get; set; }
         public string? Title { get; set; }
@@ -14,9 +16,9 @@ namespace BlogApp.Entities
         public bool IsDeleted { get; set; } = false;
 
         public int UserId { get; set; }
-        public User User { get; set; } = null!;
+        public UserDto UserDto { get; set; } = null!;
         public int CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public CategoryDto CategoryDto { get; set; } = null!;
+        public List<CommentDto> CommentDtos { get; set; } = new List<CommentDto>();
     }
 }
