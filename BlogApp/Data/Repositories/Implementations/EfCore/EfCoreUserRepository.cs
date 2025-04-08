@@ -20,14 +20,13 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         }
 
         #region Create
-        public async Task<UserDto> CreateUserAsync(UserDto userDto)
+        public async Task<UserCreateDto> CreateUserAsync(UserCreateDto userDto)
         {
             var entity = _mapper.Map<User>(userDto);
-
             await _context.Users.AddAsync(entity);
             await _context.SaveChangesAsync();
+            //userDto.Id = entity.Id; 
 
-            userDto.Id = entity.Id;
             return userDto;
         }
         #endregion

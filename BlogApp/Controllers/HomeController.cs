@@ -13,19 +13,21 @@ namespace BlogApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IPostRepository _postRrepository;
+        private readonly IPostRepository _postRepository;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IPostRepository postRrepository)
+        public HomeController(ILogger<HomeController> logger, IPostRepository postRepository, IMapper mapper)
         {
             _logger = logger;
-            _postRrepository = postRrepository;
+            _postRepository = postRepository;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
         {
-            var totalPosts = await _postRrepository.Posts.CountAsync();
+            var totalPosts = await _postRepository.Posts.CountAsync();
 
-            var posts = await _postRrepository.Posts
+            var posts = await _postRepository.Posts
                 .Skip((pageNumber - 1) * pageSize) 
                 .Take(pageSize)  
                 .ToListAsync();
@@ -41,12 +43,15 @@ namespace BlogApp.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> PostDetail(int id)
         {
-            var post = await _postRrepository.Posts.FirstOrDefaultAsync(p => p.Id == id);
-            if (post == null) return NotFound();
+            var postDto = await _postRepository.Posts
+                                .FirstOrDefaultAsync(p => p.Id == id);
 
-            return View(post);
+            if (postDto == null)
+                return NotFound();
+
+            return View(postDto); 
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

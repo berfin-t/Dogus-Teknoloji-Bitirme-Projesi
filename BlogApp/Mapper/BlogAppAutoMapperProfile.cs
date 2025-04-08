@@ -16,6 +16,7 @@ namespace BlogApp.Mapper
             CreateMap<Category, CategoryDto>();
             CreateMap<Comment, CommentDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserCreateDto>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@using BlogApp.Dtos.PostDtos
+
 @model PostDto
 
 <div class="container mt-4">
@@ -6,8 +7,29 @@
         <img src="@Model.Image" class="card-img-top img-fluid" alt="Post Image" style="max-height: 400px; object-fit: cover;" />
         <div class="card-body">
             <h2 class="card-title">@Model.Title</h2>
-            <span class="badge bg-danger mb-3">@Model.CategoryDto?.Name</span>
+            <span class="badge bg-gradient mb-3 @GetCategoryColor(Model.CategoryDto.Name)">@Model.CategoryDto?.Name</span>
             <p class="card-text">@Model.Description</p>
         </div>
     </div>
 </div>
+
+@functions {
+    public string GetCategoryColor(string categoryName)
+    {
+        switch (categoryName)
+        {
+            case "Web Programlama":
+                return "bg-primary";
+            case "Backend":
+                return "bg-success";
+            case "Frontend":
+                return "bg-info";
+            case "Oyun Geliştirme":
+                return "bg-warning";
+            case "Mobil":
+                return "bg-danger";
+            default:
+                return "bg-secondary";
+        }
+    }
+}

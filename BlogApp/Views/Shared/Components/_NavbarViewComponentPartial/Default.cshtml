@@ -12,15 +12,22 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Ana Sayfa</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Blog">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Hakkimizda">Hakkımızda</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Iletisim">İletişim</a>
-                </li>
+
+                @if (User.Identity.IsAuthenticated) 
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Logout", "Users")">Logout</a>
+                    </li>
+                }
+                else  
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Login", "Users")">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Register", "Users")">Register</a>
+                    </li>
+                }
             </ul>
         </div>
     </div>

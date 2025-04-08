@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Components
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -19,12 +20,15 @@
 
                                     <div class="card-body">
                                         <h5 class="card-title text-dark fw-bold">@post.Title</h5>
-                                        <p class="card-text text-muted small">@post.Description</p>
+                                        <p class="card-text text-muted small post-description">@post.Description</p> 
                                     </div>
 
                                     <footer class="card-footer bg-white border-0">
-                                        <span class="badge bg-gradient bg-danger text-white px-2 py-1">@post.CategoryDto.Name</span>
+                                        <span class="badge bg-gradient @GetCategoryColor(post.CategoryDto.Name) text-white px-2 py-1">
+                                            @post.CategoryDto.Name
+                                        </span>
                                     </footer>
+
                                 </div>
                             </a>
                         </article>
@@ -72,3 +76,35 @@
         </section>
     </div>
 </div>
+
+@functions {
+    public string GetCategoryColor(string categoryName)
+    {
+        switch (categoryName)
+        {
+            case "Web Programlama":
+                return "bg-primary"; 
+            case "Backend":
+                return "bg-success"; 
+            case "Frontend":
+                return "bg-info"; 
+            case "Oyun Geliştirme":
+                return "bg-warning"; 
+            case "Mobil":
+                return "bg-danger"; 
+            default:
+                return "bg-secondary"; 
+        }
+    }
+}
+
+
+<style>
+    .post-description {
+        max-height: 3.6em; 
+        line-height: 1.8em; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    }
+</style>

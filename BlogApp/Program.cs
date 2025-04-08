@@ -3,6 +3,7 @@ using BlogApp.Data.DataSeeder;
 using BlogApp.Data.Repositories.Implementations.EfCore;
 using BlogApp.Data.Repositories.Interfaces;
 using BlogApp.Mapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,13 @@ builder.Services.AddScoped<IPostRepository, EfCorePostRepository>();
 builder.Services.AddScoped<ICategoryRepository, EfCoreCategoryRepository>();
 builder.Services.AddScoped<ICommentRepository, EfCoreCommentRepository>();
 builder.Services.AddScoped<IUserRepository, EfCoreUserRepository>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.AccessDeniedPath = "/Users/AccessDenied";
+    options.LoginPath = "/Users/Login";
+    options.LogoutPath = "/Users/Logout";
+});
 
 var app = builder.Build();
 
@@ -45,6 +53,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

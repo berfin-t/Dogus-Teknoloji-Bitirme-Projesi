@@ -1,7 +1,9 @@
 ﻿using BlogApp.Data.BlogAppDbContext;
 using BlogApp.Entities;
 using Bogus;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace BlogApp.Data.DataSeeder
 {
@@ -32,16 +34,23 @@ namespace BlogApp.Data.DataSeeder
             // Kullanıcı verileri
             if (!context.Users.Any())
             {
+                var passwordHasher = new PasswordHasher<User>(); 
+
                 var userFaker = new Faker<User>()
                     .RuleFor(u => u.UserName, f => f.Internet.UserName())
                     .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                     .RuleFor(u => u.LastName, f => f.Name.LastName())
                     .RuleFor(u => u.Email, f => f.Internet.Email())
-                    .RuleFor(u => u.Password, f => "123456")
                     .RuleFor(u => u.UserProfile, f => f.Image.PicsumUrl())
                     .RuleFor(u => u.IsDeleted, false);
 
                 var users = userFaker.Generate(10);
+
+                foreach (var user in users)
+                {
+                    user.Password = passwordHasher.HashPassword(user, "12345678"); 
+                }
+
                 context.Users.AddRange(users);
                 context.SaveChanges();
             }
@@ -54,7 +63,7 @@ namespace BlogApp.Data.DataSeeder
                 var postFaker = new Faker<Post>()
                     .RuleFor(p => p.Title, f => f.Lorem.Sentence(5))
                     .RuleFor(p => p.Content, f => f.Lorem.Paragraphs(2))
-                    .RuleFor(p => p.Description, f => f.Lorem.Sentence(10))
+                    .RuleFor(p => p.Description, f => f.Lorem.Sentence(100))
                     .RuleFor(p => p.Image, f => f.Image.PicsumUrl())
                     .RuleFor(p => p.CreatedDate, f => f.Date.Past(1))
                     .RuleFor(p => p.IsActive, true)
@@ -63,20 +72,20 @@ namespace BlogApp.Data.DataSeeder
                     .RuleFor(p => p.Comments, f =>
                         new List<Comment>
                         {
-                    new Comment
-                    {
-                        Text = f.Lorem.Sentence(),
-                        CreatedDate = f.Date.Recent(),
-                        IsDeleted = false,
-                        UserId = f.PickRandom(userIds)
-                    },
-                    new Comment
-                    {
-                        Text = f.Lorem.Sentence(),
-                        CreatedDate = f.Date.Recent(),
-                        IsDeleted = false,
-                        UserId = f.PickRandom(userIds)
-                    }
+                            new Comment
+                            {
+                                Text = f.Lorem.Sentence(),
+                                CreatedDate = f.Date.Recent(),
+                                IsDeleted = false,
+                                UserId = f.PickRandom(userIds)
+                            },
+                            new Comment
+                            {
+                                Text = f.Lorem.Sentence(),
+                                CreatedDate = f.Date.Recent(),
+                                IsDeleted = false,
+                                UserId = f.PickRandom(userIds)
+                            }
                         });
 
                 var posts = postFaker.Generate(10);
