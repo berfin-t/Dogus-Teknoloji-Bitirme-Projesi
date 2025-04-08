@@ -3,9 +3,8 @@ using BlogApp.Dtos.UserDtos;
 
 namespace BlogApp.Dtos.CommentDtos
 {
-    public class CommentDto
+    public class CommentCreateDto
     {
-        public int Id { get; set; }
         public string? Text { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;

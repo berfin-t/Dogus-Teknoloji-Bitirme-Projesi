@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using AutoMapper;
-using Azure;
 using BlogApp.Data.Repositories.Interfaces;
-using BlogApp.Dtos.PostDtos;
 using BlogApp.Models;
 using BlogApp.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -43,16 +41,7 @@ namespace BlogApp.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> PostDetail(int id)
-        {
-            var postDto = await _postRepository.Posts
-                                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (postDto == null)
-                return NotFound();
-
-            return View(postDto); 
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

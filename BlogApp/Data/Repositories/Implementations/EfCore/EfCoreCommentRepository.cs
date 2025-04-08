@@ -20,14 +20,13 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         }
 
         #region Create
-        public async Task<CommentDto> CreateCommentAsync(CommentDto commentDto)
+        public async Task<CommentCreateDto> CreateCommentAsync(CommentCreateDto commentDto)
         {
             var entity = _mapper.Map<Comment>(commentDto);
 
             await _context.Comments.AddAsync(entity);
             await _context.SaveChangesAsync();
-
-            commentDto.Id = entity.Id;
+            //commentDto.Id = entity.Id;
             return commentDto;
         }
         #endregion

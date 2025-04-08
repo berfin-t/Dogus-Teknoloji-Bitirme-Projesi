@@ -12,9 +12,15 @@ namespace BlogApp.Mapper
         public BlogAppAutoMapperProfile()
         {
             CreateMap<Post, PostDto>()
-            .ForMember(dest => dest.CategoryDto, opt => opt.MapFrom(src => src.Category));
+            .ForMember(dest => dest.CategoryDto, opt => opt.MapFrom(src => src.Category))
+            .ForMember(dest => dest.CommentDtos, opt => opt.MapFrom(src => src.Comments));
+
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.User))
+                .ReverseMap();
+
             CreateMap<Category, CategoryDto>();
-            CreateMap<Comment, CommentDto>().ReverseMap();
+
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, UserCreateDto>().ReverseMap();
         }
