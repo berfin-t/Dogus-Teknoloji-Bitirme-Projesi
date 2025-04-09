@@ -3,60 +3,208 @@
 @model PostDto
 
 <div class="container mt-4">
-    <div class="card shadow-sm border-0">
-        <img src="@Model.Image" class="card-img-top img-fluid" alt="Post Image" style="max-height: 400px; object-fit: cover;" />
-        <div class="card-body">
-            <h2 class="card-title">@Model.Title</h2>
-            <span class="badge bg-gradient mb-3 @GetCategoryColor(Model.CategoryDto.Name)">@Model.CategoryDto?.Name</span>
-            <p class="card-text">@Model.Description</p>
-        </div>
-    </div>
-
-    <div class="bg-white mt-4">
-        <div class="card border-0">
-            <div class="card-header pb-0">
-                <h4><span id="commentCount">@Model.CommentDtos.Count() adet yorum var.</span></h4>
-            </div>
-            <div class="card-body">
-                <div id="comments">
-                    @foreach (var comment in Model.CommentDtos)
-                    {
-                        <div class="my-4 d-flex">
-                            <img src="@comment.UserDto.UserProfile" class="avatar rounded-circle me-3" alt="User Avatar" style="width: 50px; height: 50px; object-fit: cover;">
-                            <div>
-                                <h6 class="fw-bold">@comment.UserDto.UserName</h6>
-                                <span class="text-muted small">@comment.CreatedDate.ToString("dd MMM yyyy HH:mm")</span>
-                                <p class="mt-2">@comment.Text</p>
-                            </div>
-                        </div>
-                    }
+    <div class="row">
+        <!-- Left column for the post content -->
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <img src="@Model.Image" class="card-img-top img-fluid" alt="Post Image" style="max-height: 400px; object-fit: cover;" />
+                <div class="card-body">
+                    <h2 class="card-title">@Model.Title</h2>
+                    <span class="badge bg-gradient mb-3 @GetCategoryColor(Model.CategoryDto.Name)">@Model.CategoryDto?.Name</span>
+                    <p class="card-text">@Model.Description</p>
                 </div>
+            </div>
+        </div>
 
-                @if (User.Identity!.IsAuthenticated)
-                {
-                    <hr class="my-4">
-                    <div>
-                        <h4 class="mb-3">Yorum Ekle</h4>
-                        <form action="/posts/AddComment" method="post">
-                            <input type="hidden" id="PostId" name="PostId" value="@Model.Id">
-                            <div class="mb-3">
-                                <label for="Text" class="form-label">Yorum</label>
-                                <textarea name="Text" id="Text" class="form-control" rows="3" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" id="btnYorumKayit" class="btn btn-primary">Kaydet</button>
-                            </div>
-                        </form>
+        <!-- Right column for the comments -->
+        <div class="col-md-4">
+            <div class="bg-white mt-4">
+                <div class="card border-0">
+                    <div class="card-header pb-0">
+                        <h4><span id="commentCount">@Model.CommentDtos.Count() adet yorum var.</span></h4>
                     </div>
-                }
-                else
-                {
-                    <p>Yorum yapmak için <a href="/users/login">giriş yapın</a>.</p>
-                }
+                    <div class="card-body">
+                        <div id="comments">
+                            @foreach (var comment in Model.CommentDtos)
+                            {
+                                <div class="my-4 d-flex">
+                                    <img src="@comment.UserDto.UserProfile" class="avatar rounded-circle me-3" alt="User Avatar" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div>
+                                        <h6 class="fw-bold">@comment.UserDto.UserName</h6>
+                                        <span class="text-muted small">@comment.CreatedDate.ToString("dd MMM yyyy HH:mm")</span>
+                                        <p class="mt-2">@comment.Text</p>
+                                        @if (User.Identity!.IsAuthenticated && comment.UserDto.UserName == User.Identity.Name)
+                                        {
+                                            <!-- Düzenle ve Sil ikonları -->
+                                            <a href="#"
+                                               class="text-primary"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#editCommentModal"
+                                               data-comment-id="@comment.Id"
+                                               data-comment-text="@comment.Text"
+                                               data-comment-postId ="@comment.PostId">
+                                               
+                                                <i class="bi bi-pencil-square"></i> Düzenle
+                                            </a>
+                                            <a href="#"
+                                               class="text-danger ms-3"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#deleteCommentModal"
+                                               data-comment-id="@comment.Id">
+                                                <i class="bi bi-trash"></i> Sil
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <hr class="my-4">
+                            <div>
+                                <h4 class="mb-3">Yorum Ekle</h4>
+                                <form action="/comments/CreateComment" method="post">
+                                    <input type="hidden" id="PostId" name="PostId" value="@Model.Id">
+                                    <div class="mb-3">
+                                        <label for="Text" class="form-label">Yorum</label>
+                                        <textarea name="Text" id="Text" class="form-control" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <button type="submit" id="btnYorumKayit" class="btn btn-primary">Kaydet</button>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Yorum yapmak için <a href="/users/login">giriş yapın</a>.</p>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Modal for editing comment -->
+    <div class="modal fade" id="editCommentModal" tabindex="-1" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCommentModalLabel">Yorum Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCommentForm" action="/Comments/EditComment" method="post">
+                        <input type="hidden" id="EditCommentId" name="Id" />
+                        <input type="hidden" id="EditCommentPostId" name="PostId" />
+                        <div class="mb-3">
+                            <label for="EditCommentText" class="form-label">Yorum</label>
+                            <textarea name="Text" id="EditCommentText" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Güncelle</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for deleting comment -->
+    <div class="modal fade" id="deleteCommentModal" tabindex="-1" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCommentModalLabel">Yorum Sil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bu yorumu silmek istediğinize emin misiniz?</p>
+                    <form id="deleteCommentForm" action="/Comments/DeleteComment" method="post">
+                        <input type="hidden" id="DeleteCommentId" name="commentId" />
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-danger">Sil</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript">
+                $(document).ready(function () {
+            $("#btnYorumKayit").click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Comments/CreateComment',
+                    dataType: 'json',
+                    data: {
+                        PostId: $('#PostId').val(),
+                        UserName: $('#UserName').val(),
+                        Text: $('#Text').val(),
+                    },
+                    success: function (yorum) {
+                        var date = new Date(yorum.createdDate);
+
+                        $("#comments").append(`
+                            <div class="my-4 d-flex">
+                                <img src="~/img/${yorum.userProfile}" class="avatar rounded-circle float-start me-3" alt="">
+                            <div class="mb-2">
+                            <h6>${yorum.username}</h6>
+                            <span>${date.toLocaleDateString()}</span>
+                            <p>${yorum.text}</p>
+                                    <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editCommentModal" data-comment-id=${yorum.Id} data-comment-text=${yorum.text}>
+                                                    <i class="bi bi-pencil-square"></i> Düzenle
+                                                </a>
+                                                    <a href="#" class="text-danger ms-3" data-bs-toggle="modal" data-bs-target="#deleteCommentModal" data-comment-id=${yorum.Id}>
+                                                    <i class="bi bi-trash"></i> Sil
+                                                </a>
+                            </div>
+                            </div>
+                            `);
+
+                        $("#UserName").val('');
+                        $("#Text").val('');
+
+                        var adet = parseInt($("#commentCount").text());
+                        $("#commentCount").text(adet + 1);
+                    }
+                });
+                return false;
+            })
+        });
+
+    </script>
+
+    <script>
+        var editCommentModal = document.getElementById('editCommentModal');
+        editCommentModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; 
+            var commentId = button.getAttribute('data-comment-id'); 
+            var commentText = button.getAttribute('data-comment-text');
+                var postId = button.getAttribute('data-comment-postId');
+
+            document.getElementById('EditCommentId').value = commentId;
+            document.getElementById('EditCommentText').value = commentText;
+                document.getElementById('EditCommentPostId').value = postId;
+        });
+
+        var deleteCommentModal = document.getElementById('deleteCommentModal');
+        deleteCommentModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; 
+            var commentId = button.getAttribute('data-comment-id'); 
+
+            document.getElementById('DeleteCommentId').value = commentId;
+        });
+    </script>
+}
+
 
 @functions {
     public string GetCategoryColor(string categoryName)

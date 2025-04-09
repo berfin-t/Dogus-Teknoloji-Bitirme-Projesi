@@ -6,7 +6,7 @@ namespace BlogApp.Data.Repositories.Interfaces
     {
         Task<CommentCreateDto> CreateCommentAsync(CommentCreateDto commentDto);
         IQueryable<CommentDto> Comments { get; }
-        Task EditPost(CommentDto commentDto);
+        Task EditCommentAsync(CommentDto commentDto);
         Task DeleteCommentAsync(int commentId);
     }
 }

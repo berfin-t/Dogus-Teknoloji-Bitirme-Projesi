@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AutoMapper;
 using BlogApp.Data.Repositories.Interfaces;
+using BlogApp.Dtos.PostDtos;
 using BlogApp.Models;
 using BlogApp.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -26,8 +27,8 @@ namespace BlogApp.Controllers
             var totalPosts = await _postRepository.Posts.CountAsync();
 
             var posts = await _postRepository.Posts
-                .Skip((pageNumber - 1) * pageSize) 
-                .Take(pageSize)  
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
             var model = new PostViewModel
@@ -41,7 +42,7 @@ namespace BlogApp.Controllers
             return View(model);
         }
 
-        
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

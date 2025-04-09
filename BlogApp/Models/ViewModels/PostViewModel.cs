@@ -11,5 +11,7 @@ namespace BlogApp.Models.ViewModels
         public int PageSize { get; set; }
         public int TotalPages => (int)Math.Ceiling(TotalPosts / (double)PageSize);
 
+        public string? SelectedCategory { get; set; }
+        public List<string> Categories { get; set; } = new();
     }
 }

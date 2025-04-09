@@ -5,6 +5,7 @@ namespace BlogApp.Dtos.CommentDtos
 {
     public class CommentCreateDto
     {
+        public int Id { get; set; }
         public string? Text { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;

@@ -36,7 +36,7 @@ namespace BlogApp.Data.DataSeeder
             {
                 var passwordHasher = new PasswordHasher<User>(); 
 
-                var userFaker = new Faker<User>()
+                var userFaker = new Faker<User>("tr")
                     .RuleFor(u => u.UserName, f => f.Internet.UserName())
                     .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                     .RuleFor(u => u.LastName, f => f.Name.LastName())
@@ -44,7 +44,7 @@ namespace BlogApp.Data.DataSeeder
                     .RuleFor(u => u.UserProfile, f => f.Image.PicsumUrl())
                     .RuleFor(u => u.IsDeleted, false);
 
-                var users = userFaker.Generate(10);
+                var users = userFaker.Generate(50);
 
                 foreach (var user in users)
                 {
@@ -60,10 +60,10 @@ namespace BlogApp.Data.DataSeeder
                 var userIds = context.Users.Select(u => u.Id).ToList();
                 var categoryIds = context.Categories.Select(c => c.Id).ToList();
 
-                var postFaker = new Faker<Post>()
+                var postFaker = new Faker<Post>("tr")
                     .RuleFor(p => p.Title, f => f.Lorem.Sentence(5))
                     .RuleFor(p => p.Content, f => f.Lorem.Paragraphs(2))
-                    .RuleFor(p => p.Description, f => f.Lorem.Sentence(100))
+                    .RuleFor(p => p.Description, f => f.Lorem.Sentence(150))
                     .RuleFor(p => p.Image, f => f.Image.PicsumUrl())
                     .RuleFor(p => p.CreatedDate, f => f.Date.Past(1))
                     .RuleFor(p => p.IsActive, true)
@@ -85,10 +85,17 @@ namespace BlogApp.Data.DataSeeder
                                 CreatedDate = f.Date.Recent(),
                                 IsDeleted = false,
                                 UserId = f.PickRandom(userIds)
+                            },
+                            new Comment
+                            {
+                                Text = f.Lorem.Sentence(),
+                                CreatedDate = f.Date.Recent(),
+                                IsDeleted = false,
+                                UserId = f.PickRandom(userIds)
                             }
                         });
 
-                var posts = postFaker.Generate(10);
+                var posts = postFaker.Generate(50);
                 context.Posts.AddRange(posts);
                 context.SaveChanges();
             }

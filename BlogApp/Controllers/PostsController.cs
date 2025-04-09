@@ -2,6 +2,8 @@
 using BlogApp.Dtos.CommentDtos;
 using BlogApp.Dtos.PostDtos;
 using BlogApp.Dtos.UserDtos;
+using BlogApp.Entities;
+using BlogApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +15,22 @@ namespace BlogApp.Controllers
     {
         private readonly ILogger<PostsController> _logger;
         private readonly IPostRepository _postRepository;
+        private readonly ICommentRepository _commentRepository;
 
-        public PostsController(ILogger<PostsController> logger, IPostRepository postRepository)
+        public PostsController(ILogger<PostsController> logger, IPostRepository postRepository, ICommentRepository commentRepository)
         {
             _logger = logger;
             _postRepository = postRepository;
+            _commentRepository = commentRepository;
         }
+
 
         public async Task<IActionResult> PostDetail(int id)
         {
             var postDto = await _postRepository.Posts
                                 .FirstOrDefaultAsync(p => p.Id == id);
+
+            //postDto.CommentDtos = postDto.CommentDtos.FindAll(c => !c.IsDeleted);
 
             if (postDto == null)
                 return NotFound();
@@ -31,37 +38,36 @@ namespace BlogApp.Controllers
             return View(postDto);
         }
 
-        //[Authorize]
-        //public async Task<IActionResult> Create()
-        //{
-        //    return View();
-        //}
+        [Authorize]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<IActionResult> Create(PostCreateViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        [HttpPost]
+        [Authorize]
+        public IActionResult Create(PostCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        //        var post = new PostDto
-        //        {
-        //            Title = model.Title,
-        //            Content = model.Content,
-        //            Url = model.Url,
-        //            UserId = int.Parse(userId ?? ""),
-        //            CreatedDate = DateTime.Now,
-        //            Image = "1.jpg",
-        //            IsActive = false
-        //        };
+                _postRepository.CreatePostAsync(
+                    new PostDto
+                    {
+                        Title = model.Title,
+                        Content = model.Content,
+                        UserId = int.Parse(userId ?? ""),
+                        CreatedDate = DateTime.Now,
+                        Image = "1.jpg",
+                        IsActive = false
+                    }
+                );
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
 
-        //        // Asenkron veritabanı işlemi
-        //        await _postRrepository.CreatePostAsync(post);
 
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(model);
-        //}
     }
 }

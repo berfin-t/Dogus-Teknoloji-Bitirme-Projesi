@@ -11,5 +11,7 @@ namespace BlogApp.Models.ViewModels
         [StringLength(1000, ErrorMessage = "Metin en fazla 1000 karakter olmalıdır.")]
         public string? Text { get; set; }
 
+        public int PostId { get; set; }
+
     }
 }

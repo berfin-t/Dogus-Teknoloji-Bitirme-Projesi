@@ -1,0 +1,104 @@
+﻿@model BlogApp.Dtos.UserDtos.UserDto
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Kullanıcı Bilgileri -->
+        <div class="col-md-4">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <img src="@Model.UserProfile" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;" alt="Profil Resmi">
+                    <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+                    <p class="text-muted">@Model.UserName</p>
+                    <p class="text-muted"><i class="bi bi-envelope"></i> @Model.Email</p>
+                    
+                    <p>
+                        <span class="badge bg-@(Model.IsDeleted ? "danger" : "success")">
+                            @(Model.IsDeleted ? "Silinmiş" : "Aktif")
+                        </span>
+                    </p>
+
+                    <!-- Güncelle ve Sil Butonları -->
+                    <a class="btn btn-warning w-100 mb-2" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id">
+                        <i class="bi bi-pencil-square me-1"></i> Bilgileri Güncelle
+                    </a>
+
+                    <form asp-controller="Users" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Hesabı silmek istediğinize emin misiniz?');">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-trash me-1"></i> Hesabı Sil
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kullanıcının Postları ve Yeni Post Oluşturma -->
+        <div class="col-md-8">
+            <div class="card mb-4 shadow-sm rounded-4">
+                <div class="card-header bg-dark text-white rounded-top-4">
+                    <h5 class="mb-0">Kullanıcının Postları</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PostDtos.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var post in Model.PostDtos)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <strong>@post.Title</strong> - @post.Description
+                                    </span>
+                                    <a href="/Post/Details/@post.Id" class="btn btn-outline-primary btn-sm">Görüntüle</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Henüz bir post paylaşılmamış.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Yeni Post Ekleme -->
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4">
+                    <h5 class="mb-0">Yeni Post Oluştur</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreatePost" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="UserId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Başlık</label>
+                            <input name="Title" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Açıklama</label>
+                            <input name="Description" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">İçerik</label>
+                            <textarea name="Content" rows="4" class="form-control" required></textarea>
+                        </div>
+
+                        @* <div class="mb-3">
+                            <label class="form-label">URL</label>
+                            <input name="Url" class="form-control" required />
+                        </div> *@
+
+                        <div class="mb-3">
+                            <label class="form-label">Görsel Yükle</label>
+                            <input type="file" name="Image" class="form-control" accept="image/*" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-plus-circle me-2"></i>Post Oluştur
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

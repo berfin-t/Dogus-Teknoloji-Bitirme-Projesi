@@ -39,9 +39,9 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
             {                
                 return _context.Posts
                     .AsNoTracking()
-                    .Include(p => p.Category) 
-                    .Include(p => p.Comments)
-                    .ThenInclude(p => p.User)
+                    .Include(p => p.Category)
+                    .Include(p => p.User)
+                    .ThenInclude(p => p.Comments.Where(c => !c.IsDeleted))
                     .ProjectTo<PostDto>(_mapper.ConfigurationProvider);
             }
         }

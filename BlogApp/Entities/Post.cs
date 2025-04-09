@@ -17,6 +17,6 @@ namespace BlogApp.Entities
         public User User { get; set; } = null!;
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<Comment> Comments { get; set; } = new();
     }
 }

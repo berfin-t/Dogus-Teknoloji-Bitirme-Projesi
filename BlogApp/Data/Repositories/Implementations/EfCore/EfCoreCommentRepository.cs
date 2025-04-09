@@ -22,12 +22,19 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         #region Create
         public async Task<CommentCreateDto> CreateCommentAsync(CommentCreateDto commentDto)
         {
-            var entity = _mapper.Map<Comment>(commentDto);
+            var commentEntity = _mapper.Map<Comment>(commentDto);
 
-            await _context.Comments.AddAsync(entity);
+            await _context.Comments.AddAsync(commentEntity);
             await _context.SaveChangesAsync();
-            //commentDto.Id = entity.Id;
-            return commentDto;
+
+            var createdCommentEntity = await _context.Comments
+                .Include(c => c.User)  
+                .Where(c => c.Id == commentEntity.Id)  
+                .FirstOrDefaultAsync();
+
+            var createdCommentDto = _mapper.Map<CommentCreateDto>(createdCommentEntity);
+
+            return createdCommentDto;
         }
         #endregion
 
@@ -36,12 +43,15 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         #endregion
 
         #region Update
-        public async Task EditPost(CommentDto commentDto)
+        public async Task EditCommentAsync(CommentDto commentDto)
         {
             var entity = await _context.Comments.FirstOrDefaultAsync(i => i.Id == commentDto.Id);
 
             if (entity == null) return;
-            _mapper.Map(commentDto, entity);
+
+            entity.Text = commentDto.Text;
+
+            //_mapper.Map(commentDto, entity).Text;
 
             await _context.SaveChangesAsync();
         }

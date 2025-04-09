@@ -13,16 +13,24 @@ namespace BlogApp.Mapper
         {
             CreateMap<Post, PostDto>()
             .ForMember(dest => dest.CategoryDto, opt => opt.MapFrom(src => src.Category))
-            .ForMember(dest => dest.CommentDtos, opt => opt.MapFrom(src => src.Comments));
+            .ForMember(dest => dest.CommentDtos, opt => opt.MapFrom(src => src.Comments))
+            .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.User));
 
             CreateMap<Comment, CommentDto>()
                 .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.User))
                 .ReverseMap();
+            CreateMap<CommentDto, CommentCreateDto>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                .ReverseMap();          
+
+            CreateMap<CommentCreateDto, Comment>().ReverseMap();    
 
             CreateMap<Category, CategoryDto>();
 
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<User, UserCreateDto>().ReverseMap();
+            CreateMap<User, UserCreateDto>().ReverseMap();          
+
+            CreateMap<User, UserDto>();
         }
     }
 }

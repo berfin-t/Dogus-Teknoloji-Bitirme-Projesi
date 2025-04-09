@@ -138,5 +138,52 @@ namespace BlogApp.Controllers
             TempData["SuccessMessage"] = "Kayıt başarılı! Giriş yapabilirsiniz.";
             return RedirectToAction("Login");
         }
+
+        [HttpGet("Users/Detail/{userName}")]
+        public async Task<IActionResult> Detail(string userName)
+        {
+            var user = await _userRepository.GetUserWithNameAsync(userName);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user); 
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _userRepository.EditUser(model);
+                return RedirectToAction("Detail", new { id = model.Id });
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+
+            user.IsDeleted = true;
+
+            await _userRepository.EditUser(user);
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

@@ -5,75 +5,93 @@
 
 @model PostViewModel
 
-<div class="container">
-    <div class="row justify-content-center">
-        <section class="col-12 col-md-10 col-lg-8">
-            <div class="bg-white p-3 p-md-4 rounded shadow-sm">
-
-                <section class="row row-cols-1 row-cols-md-2 g-4">
-                    @foreach (var post in Model.Posts)
-                    {
-                        <article class="col">
-                            <a href="@Url.Action("PostDetail", "Posts", new { id = post.Id })" class="text-decoration-none">
-                                <div class="card h-100 shadow-sm border-0">
-                                    <img src="@post.Image" class="card-img-top rounded-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Post Image" />
-
-                                    <div class="card-body">
-                                        <h5 class="card-title text-dark fw-bold">@post.Title</h5>
-                                        <p class="card-text text-muted small post-description">@post.Description</p> 
-                                    </div>
-
-                                    <footer class="card-footer bg-white border-0">
-                                        <span class="badge bg-gradient @GetCategoryColor(post.CategoryDto.Name) text-white px-2 py-1">
-                                            @post.CategoryDto.Name
-                                        </span>
-                                    </footer>
-
-                                </div>
-                            </a>
-                        </article>
-                    }
-                </section>
-
-                <nav aria-label="pagination" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        @if (Model.PageNumber > 1)
+<div class="container-fluid px-0">
+    <div class="bg-white p-3 p-md-4 rounded shadow-sm">
+        <!-- Kategori Filtreleme -->
+        <form method="get" asp-controller="Home" asp-action="Index" class="mb-4">
+            <div class="d-flex justify-content-end">
+                <div class="col-auto">
+                    <select class="form-select" name="selectedCategory" onchange="this.form.submit()">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach (var category in Model.Categories)
                         {
-                            <li class="page-item">
-                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Önceki</a>
-                            </li>
+                            <option value="@category" selected="@(Model.SelectedCategory == category ? "selected" : null)">
+                                @category
+                            </option>
                         }
-                        else
-                        {
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#">Önceki</a>
-                            </li>
-                        }
-
-                        @for (var i = 1; i <= Model.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
-                            </li>
-                        }
-
-                        @if (Model.PageNumber < Model.TotalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Sonraki</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#">Sonraki</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-
+                    </select>
+                </div>
+                <input type="hidden" name="pageSize" value="@Model.PageSize" />
             </div>
+        </form>
+
+        <section class="row row-cols-1 row-cols-md-2 g-3">
+            <!-- Post Kartları -->
+            @foreach (var post in Model.Posts)
+            {
+                <article class="col">
+                    <a href="@Url.Action("PostDetail", "Posts", new { id = post.Id })" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm border-0">
+                            <img src="@post.Image" class="card-img-top rounded-top img-fluid" style="max-height: 200px; object-fit: cover;" alt="Post Image" />
+
+                            <div class="card-body">
+                                <h5 class="card-title text-dark fw-bold">@post.Title</h5>
+                                <p class="card-text text-muted small post-description">@post.Description</p>
+                            </div>
+
+                            <footer class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                                <span class="badge bg-gradient @GetCategoryColor(post.CategoryDto.Name) text-white px-2 py-1">
+                                    @post.CategoryDto.Name
+                                </span>
+
+                                <div class="ms-3">
+                                    <small class="text-muted">Yazan: @post.UserDto.UserName</small>
+                                </div>
+                            </footer>
+                        </div>
+                    </a>
+                </article>
+            }
         </section>
+
+
+        <!-- Sayfalama -->
+        <nav aria-label="pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                @if (Model.PageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize, selectedCategory = Model.SelectedCategory })">Önceki</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Önceki</a>
+                    </li>
+                }
+
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize, selectedCategory = Model.SelectedCategory })">@i</a>
+                    </li>
+                }
+
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize, selectedCategory = Model.SelectedCategory })">Sonraki</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Sonraki</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
 
@@ -83,28 +101,34 @@
         switch (categoryName)
         {
             case "Web Programlama":
-                return "bg-primary"; 
+                return "bg-primary";
             case "Backend":
-                return "bg-success"; 
+                return "bg-success";
             case "Frontend":
-                return "bg-info"; 
+                return "bg-info";
             case "Oyun Geliştirme":
-                return "bg-warning"; 
+                return "bg-warning";
             case "Mobil":
-                return "bg-danger"; 
+                return "bg-danger";
             default:
-                return "bg-secondary"; 
+                return "bg-secondary";
         }
     }
 }
 
-
 <style>
     .post-description {
-        max-height: 3.6em; 
-        line-height: 1.8em; 
+        max-height: 3.6em;
+        line-height: 1.8em;
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .card-footer {
+        padding: 0.75rem;
     }
 </style>

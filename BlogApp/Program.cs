@@ -6,9 +6,10 @@ using BlogApp.Mapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(typeof(BlogAppAutoMapperProfile)); 
+builder.Services.AddAutoMapper(typeof(BlogAppAutoMapperProfile).Assembly); 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<Context>(options =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("connection")
-    );
+    );    
 });
 
 builder.Services.AddScoped<IPostRepository, EfCorePostRepository>();

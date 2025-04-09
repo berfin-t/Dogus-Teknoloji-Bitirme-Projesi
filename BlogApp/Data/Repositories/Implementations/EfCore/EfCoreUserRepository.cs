@@ -41,8 +41,29 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
             var entity = await _context.Users.FirstOrDefaultAsync(i => i.Id == userDto.Id);
 
             if (entity == null) return;
-            _mapper.Map(userDto, entity);
 
+            // Kullanıcı bilgilerini güncelle
+            entity.FirstName = userDto.FirstName;
+            entity.LastName = userDto.LastName;
+            entity.UserName = userDto.UserName;
+            entity.Email = userDto.Email;
+
+            // Profil resmini değiştir
+            if (userDto.UserProfile != null)
+            {
+                entity.UserProfile = userDto.UserProfile; // Yeni profil resmi verisini al
+            }
+
+            // Şifre değişmediği için, eski şifreyi koruyalım
+            if (!string.IsNullOrEmpty(userDto.Password))
+            {
+                entity.Password = userDto.Password; // Yeni şifreyi al
+            }
+
+            // Kullanıcı durumu
+            entity.IsDeleted = userDto.IsDeleted;
+
+            // Değişiklikleri kaydet
             await _context.SaveChangesAsync();
         }
         #endregion
@@ -62,5 +83,23 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
             await _context.SaveChangesAsync();
         }
         #endregion
+
+        public async Task<UserDto?> GetUserWithNameAsync(string userName)
+        {
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Posts)
+                .Include(u => u.Comments)
+                .FirstOrDefaultAsync(u => u.UserName == userName && !u.IsDeleted);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
+        }
+
     }
 }

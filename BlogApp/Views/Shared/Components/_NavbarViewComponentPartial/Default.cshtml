@@ -1,4 +1,5 @@
-﻿<!-- Navbar -->
+﻿@using System.Security.Claims
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">Berfin Tek Blog Page</a>
@@ -13,13 +14,17 @@
                     <a class="nav-link" href="/">Ana Sayfa</a>
                 </li>
 
-                @if (User.Identity.IsAuthenticated) 
+                @if (User.Identity.IsAuthenticated)
                 {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Detail", "Users", new { userName = User.FindFirstValue(ClaimTypes.Name) })">@User.Identity.Name</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Logout", "Users")">Logout</a>
                     </li>
                 }
-                else  
+                else
                 {
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Login", "Users")">Login</a>

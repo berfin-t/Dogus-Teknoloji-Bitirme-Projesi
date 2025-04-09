@@ -8,5 +8,6 @@ namespace BlogApp.Data.Repositories.Interfaces
         IQueryable<UserDto> Users { get; }
         Task EditUser(UserDto userDto);
         Task DeleteUserAsync(int userId);
+        Task<UserDto> GetUserWithNameAsync(string userName);
     }
 }
