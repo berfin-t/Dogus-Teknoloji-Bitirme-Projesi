@@ -32,39 +32,9 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         }
         #endregion
 
-        #region Read
-        //AsNoTracking(). ile salt okunur işlemler için izlemeyi devre dışı bırakma
-        //Sonuçları doğrudan CategoryDtokullanarak yansıtmakProjectTo , Categorygereksiz veri yüklemeden varlıkları veritabanı düzeyindeki ilgili
-        //DTO'lara verimli bir şekilde eşler.
+        #region Read        
         public IQueryable<CategoryDto> Categories => _context.Categories.AsNoTracking().ProjectTo<CategoryDto>(_mapper.ConfigurationProvider);
         #endregion
-
-        #region Update
-        public async Task EditPost(CategoryDto categoryDto)
-        {
-            var entity = await _context.Categories.FirstOrDefaultAsync(i => i.Id == categoryDto.Id);
-
-            if (entity == null) return;
-            _mapper.Map(categoryDto, entity);
-
-            await _context.SaveChangesAsync();
-        }
-        #endregion
-
-        #region Delete
-        public async Task DeleteCategoryAsync(int categoryId)
-        {
-            var entity = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
-
-            if (entity == null)
-            {
-                throw new InvalidOperationException($"{categoryId} ID'li kategori bulunamadı.");
-            }
-
-            entity.IsDeleted = true;
-
-            await _context.SaveChangesAsync();
-        }
-        #endregion
+        
     }
 }

@@ -27,6 +27,7 @@ namespace BlogApp.Controllers
             var totalPosts = await _postRepository.Posts.CountAsync();
 
             var posts = await _postRepository.Posts
+                .OrderByDescending(p => p.CreatedDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

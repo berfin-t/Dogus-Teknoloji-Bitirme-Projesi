@@ -16,6 +16,11 @@ namespace BlogApp.Mapper
             .ForMember(dest => dest.CommentDtos, opt => opt.MapFrom(src => src.Comments))
             .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.User));
 
+            CreateMap<PostDto, Post>()   
+            .ForMember(dest => dest.Id, opt => opt.Ignore()) 
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.Now));  
+            
+
             CreateMap<Comment, CommentDto>()
                 .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.User))
                 .ReverseMap();

@@ -21,18 +21,32 @@
                             <label asp-for="Description" class="form-label fw-bold"></label>
                             <input asp-for="Description" class="form-control shadow-sm" placeholder="Kısa açıklama giriniz">
                             <span asp-validation-for="Description" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Url" class="form-label fw-bold"></label>
-                            <input asp-for="Url" class="form-control shadow-sm" placeholder="Geçerli bir URL giriniz">
-                            <span asp-validation-for="Url" class="text-danger small"></span>
-                        </div>
+                        </div>                        
 
                         <div class="mb-3">
                             <label asp-for="Content" class="form-label fw-bold"></label>
                             <textarea asp-for="Content" class="form-control shadow-sm" rows="6" placeholder="Post içeriğini giriniz"></textarea>
                             <span asp-validation-for="Content" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="CategoryId" class="form-label fw-bold">Kategori Seç</label>
+                            <select asp-for="CategoryId" class="form-control shadow-sm">
+                                <option value="">Bir kategori seçiniz</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Id" selected="@(Model.CategoryId == category.Id ? "selected" : null)">
+                                        @category.Name
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Image" class="form-label fw-bold">Resim Yükle</label>
+                            <input asp-for="Image" type="file" class="form-control shadow-sm" accept="image/*">
+                            <span asp-validation-for="Image" class="text-danger small"></span>
                         </div>
 
                         <div class="form-check mb-3">

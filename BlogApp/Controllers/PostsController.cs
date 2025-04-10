@@ -1,4 +1,5 @@
 ﻿using BlogApp.Data.Repositories.Interfaces;
+using BlogApp.Dtos.CommentDtos;
 using BlogApp.Dtos.PostDtos;
 using BlogApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +14,14 @@ namespace BlogApp.Controllers
         private readonly ILogger<PostsController> _logger;
         private readonly IPostRepository _postRepository;
         private readonly ICommentRepository _commentRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public PostsController(ILogger<PostsController> logger, IPostRepository postRepository, ICommentRepository commentRepository)
+        public PostsController(ILogger<PostsController> logger, IPostRepository postRepository, ICommentRepository commentRepository, ICategoryRepository categoryRepository)
         {
             _logger = logger;
             _postRepository = postRepository;
             _commentRepository = commentRepository;
+            _categoryRepository = categoryRepository;
         }
 
 
@@ -26,8 +29,11 @@ namespace BlogApp.Controllers
         {
             var postDto = await _postRepository.Posts
                                 .FirstOrDefaultAsync(p => p.Id == id);
+            if (postDto == null)
+                return NotFound();
 
-            postDto.CommentDtos = postDto.CommentDtos.FindAll(c => !c.IsDeleted);
+            postDto.CommentDtos = postDto.CommentDtos?.Where(c => !c.IsDeleted).ToList()
+                                  ?? new List<CommentDto>();
 
             if (postDto == null)
                 return NotFound();
@@ -35,36 +41,47 @@ namespace BlogApp.Controllers
             return View(postDto);
         }
 
+        [HttpGet]
         [Authorize]
         public IActionResult Create()
         {
-            return View();
+            var model = new PostCreateViewModel
+            {
+                Categories = _categoryRepository.Categories.ToList() 
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create(PostCreateViewModel model)
+        public async Task<IActionResult> Create(PostCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                _postRepository.CreatePostAsync(
-                    new PostDto
-                    {
-                        Title = model.Title,
-                        Content = model.Content,
-                        UserId = int.Parse(userId ?? ""),
-                        CreatedDate = DateTime.Now,
-                        Image = "1.jpg",
-                        IsActive = false
-                    }
-                );
-                return RedirectToAction("Index");
+                model.Categories = _categoryRepository.Categories.ToList(); 
+
+                var postDto = new PostDto
+                {
+                    Title = model.Title,
+                    Content = model.Content,
+                    UserId = int.Parse(userId ?? ""),
+                    CreatedDate = DateTime.Now,
+                    Image = model.ImageUrl ?? "default.jpg",
+                    IsActive = model.IsActive,
+                    CategoryId = model.CategoryId
+                };
+
+                await _postRepository.CreatePostAsync(postDto);
+
+                return RedirectToAction("Index", "Home");
             }
+
+            model.Categories = _categoryRepository.Categories.ToList();
             return View(model);
         }
-
 
     }
 }

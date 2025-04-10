@@ -6,7 +6,5 @@ namespace BlogApp.Data.Repositories.Interfaces
     {
         Task<CategoryDto> CreateCategoryAsync(CategoryDto categoryDto);
         IQueryable<CategoryDto> Categories { get; }
-        Task EditPost(CategoryDto categoryDto);
-        Task DeleteCategoryAsync(int categoryId);
     }
 }
