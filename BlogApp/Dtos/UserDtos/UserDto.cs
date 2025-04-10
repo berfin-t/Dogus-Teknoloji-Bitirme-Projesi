@@ -15,7 +15,7 @@ namespace BlogApp.Dtos.UserDtos
         public string? UserProfile { get; set; }
         public bool IsDeleted { get; set; } = false;
 
-        public List<PostDto> PostDtos { get; set; } = new List<PostDto>();
+        public List<PostDto> PostDtos { get; set; } = new();
         public List<CommentDto> CommentDtos { get; set; } = new List<CommentDto>();
     }
 }

@@ -34,20 +34,28 @@
         <!-- Kullanıcının Postları ve Yeni Post Oluşturma -->
         <div class="col-md-8">
             <div class="card mb-4 shadow-sm rounded-4">
-                <div class="card-header bg-dark text-white rounded-top-4">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center rounded-top-4">
                     <h5 class="mb-0">Kullanıcının Postları</h5>
+                    <a href="/Posts/Create" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Yeni Post Oluştur
+                    </a>
                 </div>
                 <div class="card-body">
-                    @if (Model.PostDtos.Any())
+                    <p class="text-muted mb-3">Post Sayısı: <strong>@Model.PostDtos?.Count()</strong></p>
+
+                    @if (Model.PostDtos != null && Model.PostDtos.Any())
                     {
                         <ul class="list-group">
                             @foreach (var post in Model.PostDtos)
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>
-                                        <strong>@post.Title</strong> - @post.Description
-                                    </span>
-                                    <a href="/Post/Details/@post.Id" class="btn btn-outline-primary btn-sm">Görüntüle</a>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="@post.Image" alt="Post Resmi" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;">
+                                        <span class="fw-semibold">@post.Title</span>
+                                    </div>
+                                    <a href="/Posts/PostDetail/@post.Id" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> Görüntüle
+                                    </a>
                                 </li>
                             }
                         </ul>
@@ -59,46 +67,7 @@
                 </div>
             </div>
 
-            <!-- Yeni Post Ekleme -->
-            <div class="card shadow-sm rounded-4">
-                <div class="card-header bg-primary text-white rounded-top-4">
-                    <h5 class="mb-0">Yeni Post Oluştur</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="CreatePost" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="UserId" value="@Model.Id" />
-
-                        <div class="mb-3">
-                            <label class="form-label">Başlık</label>
-                            <input name="Title" class="form-control" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Açıklama</label>
-                            <input name="Description" class="form-control" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">İçerik</label>
-                            <textarea name="Content" rows="4" class="form-control" required></textarea>
-                        </div>
-
-                        @* <div class="mb-3">
-                            <label class="form-label">URL</label>
-                            <input name="Url" class="form-control" required />
-                        </div> *@
-
-                        <div class="mb-3">
-                            <label class="form-label">Görsel Yükle</label>
-                            <input type="file" name="Image" class="form-control" accept="image/*" required />
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="bi bi-plus-circle me-2"></i>Post Oluştur
-                        </button>
-                    </form>
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>

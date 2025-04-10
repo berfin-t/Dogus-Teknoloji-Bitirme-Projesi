@@ -27,10 +27,11 @@ namespace BlogApp.Mapper
 
             CreateMap<Category, CategoryDto>();
 
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.PostDtos, opt => opt.MapFrom(src => src.Posts)); ;
             CreateMap<User, UserCreateDto>().ReverseMap();          
 
-            CreateMap<User, UserDto>();
+           
         }
     }
 }

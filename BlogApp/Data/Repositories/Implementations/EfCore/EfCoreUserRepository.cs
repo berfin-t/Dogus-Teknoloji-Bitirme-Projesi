@@ -42,28 +42,23 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
 
             if (entity == null) return;
 
-            // Kullanıcı bilgilerini güncelle
             entity.FirstName = userDto.FirstName;
             entity.LastName = userDto.LastName;
             entity.UserName = userDto.UserName;
             entity.Email = userDto.Email;
 
-            // Profil resmini değiştir
             if (userDto.UserProfile != null)
             {
-                entity.UserProfile = userDto.UserProfile; // Yeni profil resmi verisini al
+                entity.UserProfile = userDto.UserProfile; 
             }
 
-            // Şifre değişmediği için, eski şifreyi koruyalım
             if (!string.IsNullOrEmpty(userDto.Password))
             {
-                entity.Password = userDto.Password; // Yeni şifreyi al
+                entity.Password = userDto.Password; 
             }
 
-            // Kullanıcı durumu
             entity.IsDeleted = userDto.IsDeleted;
 
-            // Değişiklikleri kaydet
             await _context.SaveChangesAsync();
         }
         #endregion
