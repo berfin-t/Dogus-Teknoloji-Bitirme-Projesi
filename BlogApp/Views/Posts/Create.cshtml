@@ -8,20 +8,14 @@
                     <h3 class="mb-0">Yeni Post Oluştur</h3>
                 </div>
                 <div class="card-body p-4 bg-light">
-                    <form asp-action="Create" method="post" novalidate>
+                    <form asp-action="Create" method="post" novalidate enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         <div class="mb-3">
                             <label asp-for="Title" class="form-label fw-bold"></label>
                             <input asp-for="Title" class="form-control shadow-sm" placeholder="Post başlığı giriniz">
                             <span asp-validation-for="Title" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-bold"></label>
-                            <input asp-for="Description" class="form-control shadow-sm" placeholder="Kısa açıklama giriniz">
-                            <span asp-validation-for="Description" class="text-danger small"></span>
-                        </div>                        
+                        </div>                                               
 
                         <div class="mb-3">
                             <label asp-for="Content" class="form-label fw-bold"></label>

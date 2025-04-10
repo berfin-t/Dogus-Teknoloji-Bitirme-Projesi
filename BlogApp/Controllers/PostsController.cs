@@ -61,6 +61,23 @@ namespace BlogApp.Controllers
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+                model.Categories = _categoryRepository.Categories.ToList();
+
+                string imageUrl = "https://localhost:7174/images/default.jpg";  
+
+                if (model.Image != null)  
+                {
+                    var fileName = Path.GetFileName(model.Image.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.Image.CopyToAsync(stream);
+                    }
+
+                    imageUrl = "https://localhost:7174/images/" + fileName;
+                }
+                
                 model.Categories = _categoryRepository.Categories.ToList(); 
 
                 var postDto = new PostDto
@@ -69,7 +86,7 @@ namespace BlogApp.Controllers
                     Content = model.Content,
                     UserId = int.Parse(userId ?? ""),
                     CreatedDate = DateTime.Now,
-                    Image = model.ImageUrl ?? "default.jpg",
+                    Image = imageUrl,
                     IsActive = model.IsActive,
                     CategoryId = model.CategoryId
                 };

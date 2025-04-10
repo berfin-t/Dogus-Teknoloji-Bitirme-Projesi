@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogApp.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250409170612_InitialCreate")]
+    [Migration("20250410193743_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -92,9 +92,6 @@ namespace BlogApp.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");

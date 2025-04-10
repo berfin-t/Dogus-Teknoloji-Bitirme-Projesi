@@ -62,8 +62,7 @@ namespace BlogApp.Data.DataSeeder
 
                 var postFaker = new Faker<Post>("tr")
                     .RuleFor(p => p.Title, f => f.Lorem.Sentence(5))
-                    .RuleFor(p => p.Content, f => f.Lorem.Paragraphs(2))
-                    .RuleFor(p => p.Description, f => f.Lorem.Sentence(150))
+                    .RuleFor(p => p.Content, f => f.Lorem.Sentence(150))
                     .RuleFor(p => p.Image, f => f.Image.PicsumUrl())
                     .RuleFor(p => p.CreatedDate, f => f.Date.Past(1))
                     .RuleFor(p => p.IsActive, true)
