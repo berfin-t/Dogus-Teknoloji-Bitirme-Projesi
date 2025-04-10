@@ -1,8 +1,5 @@
 ﻿using BlogApp.Data.Repositories.Interfaces;
-using BlogApp.Dtos.CommentDtos;
 using BlogApp.Dtos.PostDtos;
-using BlogApp.Dtos.UserDtos;
-using BlogApp.Entities;
 using BlogApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +26,8 @@ namespace BlogApp.Controllers
         {
             var postDto = await _postRepository.Posts
                                 .FirstOrDefaultAsync(p => p.Id == id);
+
+            postDto.CommentDtos = postDto.CommentDtos.FindAll(c => !c.IsDeleted);
 
             if (postDto == null)
                 return NotFound();

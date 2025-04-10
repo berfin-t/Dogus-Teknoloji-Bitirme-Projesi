@@ -139,14 +139,14 @@
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-            $("#btnYorumKayit").click(function () {
+                $("#btnYorumKayit").click(function () {
                     $.ajax({
                         type: 'POST',
                         url: '/Comments/CreateComment',
                         dataType: 'json',
                         data: {
                             PostId: $('#PostId').val(),
-                        UserName: $('#UserName').val(),
+                            UserName: $('#UserName').val(),
                             Text: $('#Text').val(),
                         },
                         success: function (yorum) {
@@ -161,50 +161,52 @@
                                         <p class="mt-2">${yorum.text}</p>
                                         <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editCommentModal"
                                            data-comment-id="${yorum.Id}" data-comment-text="${yorum.text}">
-                                            <i class="bi bi-pencil-square"></i> Düzenle</a>
+                                            <i class="bi bi-pencil-square"></i> Düzenle
+                                        </a>
                                         <a href="#" class="text-danger ms-3" data-bs-toggle="modal" data-bs-target="#deleteCommentModal"
                                            data-comment-id="${yorum.Id}">
-                                            <i class="bi bi-trash"></i> Sil</a>
+                                            <i class="bi bi-trash"></i> Sil
+                                        </a>
                                     </div>
                                 </div>
                             `);
 
-                        $("#UserName").val('');
+                            $("#UserName").val('');
                             $("#Text").val('');
-
+                            $("#PostId").val('');
                             var adet = parseInt($("#commentCount").text());
                             $("#commentCount").text(adet + 1);
                         }
                     });
-                return false;
-            })
+                    return false;
                 });
+            });
+        </script>
 
-    </script>
+        <script>
+            var editCommentModal = document.getElementById('editCommentModal');
+            editCommentModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var commentId = button.getAttribute('data-comment-id');
+                var commentText = button.getAttribute('data-comment-text');
+                var postId = button.getAttribute('data-comment-postId');
 
-    <script>
-        var editCommentModal = document.getElementById('editCommentModal');
-        editCommentModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget;
-                    var commentId = button.getAttribute('data-comment-id');
-                    var commentText = button.getAttribute('data-comment-text');
-                    var postId = button.getAttribute('data-comment-postId');
-
-            document.getElementById('EditCommentId').value = commentId;
-            document.getElementById('EditCommentText').value = commentText;
+                document.getElementById('EditCommentId').value = commentId;
+                document.getElementById('EditCommentText').value = commentText;
                 document.getElementById('EditCommentPostId').value = postId;
-                });
 
-        var deleteCommentModal = document.getElementById('deleteCommentModal');
-        deleteCommentModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget;
-                    var commentId = button.getAttribute('data-comment-id');
+                document.getElementById('PostId').value = postId;
+            });
 
-            document.getElementById('DeleteCommentId').value = commentId;
+            var deleteCommentModal = document.getElementById('deleteCommentModal');
+            deleteCommentModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var commentId = button.getAttribute('data-comment-id');
+
+                document.getElementById('DeleteCommentId').value = commentId;
             });
         </script>
     }
-
 
     @functions {
         public string GetCategoryColor(string categoryName)

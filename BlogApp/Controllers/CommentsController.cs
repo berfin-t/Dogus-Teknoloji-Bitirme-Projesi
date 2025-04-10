@@ -1,7 +1,5 @@
 ﻿using BlogApp.Data.Repositories.Interfaces;
 using BlogApp.Dtos.CommentDtos;
-using BlogApp.Dtos.UserDtos;
-using BlogApp.Entities;
 using BlogApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -92,10 +90,10 @@ namespace BlogApp.Controllers
                 };
 
                 await _commentRepository.EditCommentAsync(commentDto);
-
+                
                 return RedirectToAction("PostDetail", "Posts", new { id = comment.PostId });
             }
-            return View(comment);
+            return RedirectToAction("PostDetail", "Posts", new { id = comment.PostId });
         }
 
         [HttpPost]

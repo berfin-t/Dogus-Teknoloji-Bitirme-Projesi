@@ -46,13 +46,8 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         public async Task EditCommentAsync(CommentDto commentDto)
         {
             var entity = await _context.Comments.FirstOrDefaultAsync(i => i.Id == commentDto.Id);
-
             if (entity == null) return;
-
             entity.Text = commentDto.Text;
-
-            //_mapper.Map(commentDto, entity).Text;
-
             await _context.SaveChangesAsync();
         }
         #endregion
