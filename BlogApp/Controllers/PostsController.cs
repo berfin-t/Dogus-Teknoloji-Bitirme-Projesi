@@ -30,8 +30,6 @@ namespace BlogApp.Controllers
             var postDto = await _postRepository.Posts
                                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            //postDto.CommentDtos = postDto.CommentDtos.FindAll(c => !c.IsDeleted);
-
             if (postDto == null)
                 return NotFound();
 

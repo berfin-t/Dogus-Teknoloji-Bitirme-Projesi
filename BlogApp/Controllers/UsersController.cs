@@ -39,8 +39,7 @@ namespace BlogApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var isUserDto = await _userRepository.Users
-                    .FirstOrDefaultAsync(x => x.Email == model.Email);
+                var isUserDto = await _userRepository.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
 
                 if (isUserDto != null)
                 {
@@ -61,7 +60,8 @@ namespace BlogApp.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, isUser.Id.ToString()),
                     new Claim(ClaimTypes.Name, isUser.UserName ?? ""),
-                    new Claim(ClaimTypes.GivenName, isUser.FirstName ?? "")
+                    new Claim(ClaimTypes.GivenName, isUser.FirstName ?? ""),
+                    new Claim(ClaimTypes.UserData, isUser.UserProfile ?? "")
                 };
 
                         if (isUser.Email == "berfintek@mail.com")

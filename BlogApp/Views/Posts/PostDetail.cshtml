@@ -135,94 +135,94 @@
 
 
 
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script type="text/javascript">
-                $(document).ready(function () {
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
             $("#btnYorumKayit").click(function () {
-                $.ajax({
-                    type: 'POST',
-                    url: '/Comments/CreateComment',
-                    dataType: 'json',
-                    data: {
-                        PostId: $('#PostId').val(),
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Comments/CreateComment',
+                        dataType: 'json',
+                        data: {
+                            PostId: $('#PostId').val(),
                         UserName: $('#UserName').val(),
-                        Text: $('#Text').val(),
-                    },
-                    success: function (yorum) {
-                        var date = new Date(yorum.createdDate);
+                            Text: $('#Text').val(),
+                        },
+                        success: function (yorum) {
+                            var date = new Date(yorum.createdDate);
 
-                        $("#comments").append(`
-                            <div class="my-4 d-flex">
-                                <img src="~/img/${yorum.userProfile}" class="avatar rounded-circle float-start me-3" alt="">
-                            <div class="mb-2">
-                            <h6>${yorum.username}</h6>
-                            <span>${date.toLocaleDateString()}</span>
-                            <p>${yorum.text}</p>
-                                    <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editCommentModal" data-comment-id=${yorum.Id} data-comment-text=${yorum.text}>
-                                                    <i class="bi bi-pencil-square"></i> Düzenle
-                                                </a>
-                                                    <a href="#" class="text-danger ms-3" data-bs-toggle="modal" data-bs-target="#deleteCommentModal" data-comment-id=${yorum.Id}>
-                                                    <i class="bi bi-trash"></i> Sil
-                                                </a>
-                            </div>
-                            </div>
+                            $("#comments").append(`
+                                <div class="my-4 d-flex">
+                                    <img src="${yorum.userprofile}" class="avatar rounded-circle me-3" alt="User Avatar" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div>
+                                        <h6 class="fw-bold">${yorum.username}</h6>
+                                        <span class="text-muted small">${date.toLocaleString()}</span>
+                                        <p class="mt-2">${yorum.text}</p>
+                                        <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editCommentModal"
+                                           data-comment-id="${yorum.Id}" data-comment-text="${yorum.text}">
+                                            <i class="bi bi-pencil-square"></i> Düzenle</a>
+                                        <a href="#" class="text-danger ms-3" data-bs-toggle="modal" data-bs-target="#deleteCommentModal"
+                                           data-comment-id="${yorum.Id}">
+                                            <i class="bi bi-trash"></i> Sil</a>
+                                    </div>
+                                </div>
                             `);
 
                         $("#UserName").val('');
-                        $("#Text").val('');
+                            $("#Text").val('');
 
-                        var adet = parseInt($("#commentCount").text());
-                        $("#commentCount").text(adet + 1);
-                    }
-                });
+                            var adet = parseInt($("#commentCount").text());
+                            $("#commentCount").text(adet + 1);
+                        }
+                    });
                 return false;
             })
-        });
+                });
 
     </script>
 
     <script>
         var editCommentModal = document.getElementById('editCommentModal');
         editCommentModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; 
-            var commentId = button.getAttribute('data-comment-id'); 
-            var commentText = button.getAttribute('data-comment-text');
-                var postId = button.getAttribute('data-comment-postId');
+                    var button = event.relatedTarget;
+                    var commentId = button.getAttribute('data-comment-id');
+                    var commentText = button.getAttribute('data-comment-text');
+                    var postId = button.getAttribute('data-comment-postId');
 
             document.getElementById('EditCommentId').value = commentId;
             document.getElementById('EditCommentText').value = commentText;
                 document.getElementById('EditCommentPostId').value = postId;
-        });
+                });
 
         var deleteCommentModal = document.getElementById('deleteCommentModal');
         deleteCommentModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; 
-            var commentId = button.getAttribute('data-comment-id'); 
+                    var button = event.relatedTarget;
+                    var commentId = button.getAttribute('data-comment-id');
 
             document.getElementById('DeleteCommentId').value = commentId;
-        });
-    </script>
-}
+            });
+        </script>
+    }
 
 
-@functions {
-    public string GetCategoryColor(string categoryName)
-    {
-        switch (categoryName)
+    @functions {
+        public string GetCategoryColor(string categoryName)
         {
-            case "Web Programlama":
-                return "bg-primary";
-            case "Backend":
-                return "bg-success";
-            case "Frontend":
-                return "bg-info";
-            case "Oyun Geliştirme":
-                return "bg-warning";
-            case "Mobil":
-                return "bg-danger";
-            default:
-                return "bg-secondary";
+            switch (categoryName)
+            {
+                case "Web Programlama":
+                    return "bg-primary";
+                case "Backend":
+                    return "bg-success";
+                case "Frontend":
+                    return "bg-info";
+                case "Oyun Geliştirme":
+                    return "bg-warning";
+                case "Mobil":
+                    return "bg-danger";
+                default:
+                    return "bg-secondary";
+            }
         }
     }
-}

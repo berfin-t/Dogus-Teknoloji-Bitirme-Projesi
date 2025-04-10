@@ -19,12 +19,13 @@ namespace BlogApp.Controllers
             _logger = logger;
             _commentRepository = commentRepository;
         }
+        #region Create Comment
         [HttpPost]
         public async Task<JsonResult> CreateComment(int PostId, string Text)
         {
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var username = User.FindFirstValue(ClaimTypes.Name);
-            var profile = User.FindFirstValue(ClaimTypes.UserData);
+            var userprofile = User.FindFirstValue(ClaimTypes.UserData);
 
             if (!int.TryParse(userIdStr, out var userId))
             {
@@ -45,39 +46,14 @@ namespace BlogApp.Controllers
             {
                 success = true,
                 redirectUrl = Url.Action("PostDetails", "Posts", new { id = PostId }),
-                UserProfile = profile,
+                userprofile = userprofile,
                 username = username,
                 Text = Text,
                 CreatedDate = commentDto.CreatedDate
             });
 
         }
-
-        //[HttpPost]
-        //public async Task<JsonResult> AddComment(int PostId, string Text)
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var username = User.FindFirstValue(ClaimTypes.Name);
-        //    var avatar = User.FindFirstValue(ClaimTypes.UserData);
-
-        //    var entity = new CommentCreateDto
-        //    {
-        //        Text = Text,
-        //        CreatedDate = DateTime.Now,
-        //        PostId = PostId,
-        //        UserId = int.Parse(userId ?? "")
-        //    };
-
-        //    await _commentRepository.CreateCommentAsync(entity); 
-
-        //    return Json(new
-        //    {
-        //        username,
-        //        Text,
-        //        entity.CreatedDate,
-        //        avatar
-        //    });
-        //}
+        #endregion
 
         [Authorize]
         public async Task<IActionResult> EditComment(int commentId)
@@ -87,7 +63,6 @@ namespace BlogApp.Controllers
                 return NotFound();
             }
 
-            // Yorumun veritabanından çekilmesi
             var comment = await _commentRepository.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
             if (comment == null)
             {
@@ -103,8 +78,6 @@ namespace BlogApp.Controllers
             return View(commentViewModel);
         }
 
-        // Yorum Düzenleme (POST)
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> EditComment(CommentViewModel comment)
         {
@@ -122,7 +95,6 @@ namespace BlogApp.Controllers
 
                 return RedirectToAction("PostDetail", "Posts", new { id = comment.PostId });
             }
-
             return View(comment);
         }
 
