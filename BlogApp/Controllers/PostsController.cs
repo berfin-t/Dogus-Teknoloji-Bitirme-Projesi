@@ -37,9 +37,6 @@ namespace BlogApp.Controllers
             postDto.CommentDtos = postDto.CommentDtos?.Where(c => !c.IsDeleted).ToList()
                                   ?? new List<CommentDto>();
 
-            if (postDto == null)
-                return NotFound();
-
             return View(postDto);
         }
 
@@ -170,6 +167,24 @@ namespace BlogApp.Controllers
             }
             return View(model);
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeletePost(int postId)
+        {
+            var post = await _postRepository.Posts.FirstOrDefaultAsync(c => c.Id == postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            await _postRepository.DeletePostAsync(postId);
+
+            TempData["SuccessMessage"] = "Yorum başarıyla silindi.";
+
+            return RedirectToAction("Detail", "Users", new { id = post.UserDto.UserName });
+        }
+
 
     }
 }

@@ -63,8 +63,8 @@
                                             <i class="bi bi-pencil"></i> Güncelle
                                         </a>
 
-                                        <form method="post" action="/Posts/Delete" onsubmit="return confirm('Bu postu silmek istediğinize emin misiniz?')">
-                                            <input type="hidden" name="id" value="@post.Id" />
+                                        <form method="post" action="/Posts/DeletePost/@post.Id" onsubmit="return confirm('Bu postu silmek istediğinize emin misiniz?')">
+                                            <input type="hidden" name="postId" value="@post.Id" />
                                             <button type="submit" class="btn btn-outline-danger btn-sm">
                                                 <i class="bi bi-trash"></i> Sil
                                             </button>

@@ -83,7 +83,7 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         {
             var user = await _context.Users
                 .AsNoTracking()
-                .Include(u => u.Posts)
+                .Include(u => u.Posts.Where(p=>!p.IsDeleted))
                 .Include(u => u.Comments)
                 .FirstOrDefaultAsync(u => u.UserName == userName && !u.IsDeleted);
 

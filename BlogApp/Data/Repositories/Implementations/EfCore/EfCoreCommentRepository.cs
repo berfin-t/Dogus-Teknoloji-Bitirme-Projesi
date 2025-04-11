@@ -39,7 +39,9 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         #endregion
 
         #region Read        
-        public IQueryable<CommentDto> Comments => _context.Comments.AsNoTracking().ProjectTo<CommentDto>(_mapper.ConfigurationProvider);
+        public IQueryable<CommentDto> Comments => _context.Comments.
+            AsNoTracking().
+            ProjectTo<CommentDto>(_mapper.ConfigurationProvider);
         #endregion
 
         #region Update
