@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BlogApp.Dtos.UserDtos;
 using BlogApp.Entities;
+using Microsoft.AspNetCore.Authorization;
+using BlogApp.Dtos.PostDtos;
 
 namespace BlogApp.Controllers
 {
@@ -165,38 +167,99 @@ namespace BlogApp.Controllers
             return View(user); 
         }
 
-        public async Task<IActionResult> Edit(int id)
+        [Authorize]
+        public IActionResult Edit(int? id)
         {
-            var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
+            if (id == null)
+            {
                 return NotFound();
+            }
 
-            return View(user);
-        }
+            var user = _userRepository.Users.FirstOrDefault(i => i.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(new RegisterViewModel
+            {
+                Username = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Password = user.Password,
+                ImagePath = user.UserProfile,
+
+            });
+        }                 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UserDto model)
+        [Authorize]
+        public async Task<IActionResult> Edit(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await _userRepository.EditUser(model);
-                return RedirectToAction("Detail", new { id = model.Id });
-            }
+                var hashedPassword = _passwordHasher.HashPassword(new User(), model.Password);
 
-            return View(model);
-        }
+                string imageUrl = "https://localhost:7174/images/default.jpg";
+                var dto = new UserDto
+                {
+                    Id = model.Id,
+                    UserName = model.Username,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Password = hashedPassword
+                };
+                if (model.UserProfile != null)
+                {
+                    var fileName = Path.GetFileName(model.UserProfile.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
 
-        public async Task<IActionResult> Delete(int id)
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.UserProfile.CopyToAsync(stream);
+                    }
+
+                    dto.UserProfile = "https://localhost:7174/images/" + model.UserProfile.FileName;
+                }
+                else
+                {
+                    dto.UserProfile = model.ImagePath;
+                }
+                
+                await _userRepository.EditUser(dto);
+
+                var updatedUser = await _userRepository.Users
+            .FirstOrDefaultAsync(x => x.UserName == model.Username || x.Email == model.Email);
+
+                if (updatedUser == null)
+                {
+                    return NotFound();
+                }
+
+                var claims = new List<Claim>
         {
-            var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
-                return NotFound();
+            new Claim(ClaimTypes.NameIdentifier, updatedUser.Id.ToString()),
+            new Claim(ClaimTypes.Name, updatedUser.UserName ?? ""),
+            new Claim(ClaimTypes.GivenName, updatedUser.FirstName ?? ""),
+            new Claim(ClaimTypes.UserData, updatedUser.UserProfile ?? "")
+        };
 
-            user.IsDeleted = true;
+                if (updatedUser.Email == "berfintek@mail.com")
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, "admin"));
+                }
 
-            await _userRepository.EditUser(user);
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
 
-            return RedirectToAction("Index", "Home");
+                await HttpContext.SignOutAsync(); 
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                return RedirectToAction("Detail", "Users", new { userName = updatedUser.UserName });
+            }
+            return View(model);
         }
     }
 }

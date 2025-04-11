@@ -4,6 +4,7 @@ namespace BlogApp.Models.ViewModels
 {
     public class RegisterViewModel
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Kullanıcı adı gereklidir.")]
         [Display(Name = "Kullanıcı Adı")]
         public string? Username { get; set; }
@@ -36,5 +37,6 @@ namespace BlogApp.Models.ViewModels
         [Display(Name = "Resim Yükle")]
         public IFormFile? UserProfile { get; set; }
         public string? ImagePath { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

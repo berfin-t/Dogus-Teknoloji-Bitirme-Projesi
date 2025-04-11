@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using BlogApp.Data.BlogAppDbContext;
 using BlogApp.Data.Repositories.Interfaces;
+using BlogApp.Dtos.PostDtos;
 using BlogApp.Dtos.UserDtos;
 using BlogApp.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -45,17 +46,14 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
             entity.LastName = userDto.LastName;
             entity.UserName = userDto.UserName;
             entity.Email = userDto.Email;
-
-            if (userDto.UserProfile != null)
+            if (!string.IsNullOrEmpty(userDto.UserProfile))
             {
-                entity.UserProfile = userDto.UserProfile; 
+                entity.UserProfile = userDto.UserProfile;
             }
-
             if (!string.IsNullOrEmpty(userDto.Password))
             {
                 entity.Password = userDto.Password; 
             }
-
             entity.IsDeleted = userDto.IsDeleted;
 
             await _context.SaveChangesAsync();

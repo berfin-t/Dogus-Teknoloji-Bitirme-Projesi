@@ -126,8 +126,8 @@ namespace BlogApp.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(PostCreateViewModel model)
         {
             if (ModelState.IsValid)
