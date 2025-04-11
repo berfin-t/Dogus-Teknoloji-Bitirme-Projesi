@@ -1,0 +1,51 @@
+﻿@model PostCreateViewModel
+
+@{
+    ViewData["Title"] = "Post Güncelle";
+}
+
+<h2>Post Güncelle</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data" method="post">
+    <input type="hidden" asp-for="PostId" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label">İçerik</label>
+        <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        <div class="mb-3">
+            <label>Mevcut Resim:</label><br />
+            <img src="@Model.ImagePath" alt="Mevcut Resim" style="max-width: 200px; height: auto;" class="img-thumbnail" />
+        </div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="Image" class="form-label">Yeni Resim Yükle</label>
+        <input asp-for="Image" type="file" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">Kategori</label>
+        <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+            <option value="">Kategori Seçiniz</option>
+        </select>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input asp-for="IsActive" class="form-check-input"/>
+        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
+

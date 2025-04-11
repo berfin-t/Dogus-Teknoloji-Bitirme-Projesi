@@ -53,9 +53,23 @@
                                         <img src="@post.Image" alt="Post Resmi" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;">
                                         <span class="fw-semibold">@post.Title</span>
                                     </div>
-                                    <a href="/Posts/PostDetail/@post.Id" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-eye"></i> Görüntüle
-                                    </a>
+
+                                    <div class="d-flex gap-2">
+                                        <a href="/Posts/PostDetail/@post.Id" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-eye"></i> Görüntüle
+                                        </a>
+
+                                        <a href="/Posts/Edit/@post.Id" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil"></i> Güncelle
+                                        </a>
+
+                                        <form method="post" action="/Posts/Delete" onsubmit="return confirm('Bu postu silmek istediğinize emin misiniz?')">
+                                            <input type="hidden" name="id" value="@post.Id" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i> Sil
+                                            </button>
+                                        </form>
+                                    </div>
                                 </li>
                             }
                         </ul>
@@ -66,8 +80,8 @@
                     }
                 </div>
             </div>
-
-            
         </div>
+
+
     </div>
 </div>

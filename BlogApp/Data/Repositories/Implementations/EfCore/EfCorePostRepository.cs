@@ -52,9 +52,18 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
         {
             var entity = await _context.Posts.FirstOrDefaultAsync(i => i.Id == postDto.Id);
 
-            if (entity == null) return;
-            _mapper.Map(postDto, entity);
-
+            if(entity != null)
+            {
+                entity.Title = postDto.Title;
+                entity.Content = postDto.Content;
+                entity.IsActive = postDto.IsActive;
+                entity.CategoryId = postDto.CategoryId;
+                if (!string.IsNullOrEmpty(postDto.Image))
+                {
+                    entity.Image = postDto.Image;
+                }
+            }   
+                       
             await _context.SaveChangesAsync();
         }
         #endregion

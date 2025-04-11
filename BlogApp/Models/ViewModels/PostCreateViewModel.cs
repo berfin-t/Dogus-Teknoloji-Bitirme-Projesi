@@ -19,6 +19,7 @@ namespace BlogApp.Models.ViewModels
 
         [Display(Name = "Resim Yükle")]
         public IFormFile? Image { get; set; }
+        public string? ImagePath { get; set; }
 
         [Display(Name = "Aktif mi?")]
         public bool IsActive { get; set; } = true;
