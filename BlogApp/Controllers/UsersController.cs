@@ -121,7 +121,20 @@ namespace BlogApp.Controllers
                 return View(model);
             }
 
-            var hashedPassword = _passwordHasher.HashPassword(new User(), model.Password); 
+            var hashedPassword = _passwordHasher.HashPassword(new User(), model.Password);
+            string imageUrl = "https://localhost:7174/images/default.jpg";
+            if (model.UserProfile != null)
+            {
+                var fileName = Path.GetFileName(model.UserProfile.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.UserProfile.CopyToAsync(stream);
+                }
+
+                imageUrl = "https://localhost:7174/images/" + fileName;
+            }
 
             var newUserDto = new UserCreateDto
             {
@@ -130,7 +143,7 @@ namespace BlogApp.Controllers
                 LastName = model.LastName,
                 Email = model.Email,
                 Password = hashedPassword,
-                UserProfile = "p1.jpg"
+                UserProfile = imageUrl
             };
 
             await _userRepository.CreateUserAsync(newUserDto);

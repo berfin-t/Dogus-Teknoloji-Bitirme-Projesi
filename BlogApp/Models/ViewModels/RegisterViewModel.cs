@@ -32,5 +32,9 @@ namespace BlogApp.Models.ViewModels
         [Compare(nameof(Password), ErrorMessage = "Parolanız eşleşmiyor.")]
         [Display(Name = "Parola Doğrulama")]
         public string? ConfirmPassword { get; set; }
+
+        [Display(Name = "Resim Yükle")]
+        public IFormFile? UserProfile { get; set; }
+        public string? ImagePath { get; set; }
     }
 }
