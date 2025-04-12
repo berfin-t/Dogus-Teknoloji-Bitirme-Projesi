@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AutoMapper;
+using BlogApp.Data.BlogAppDbContext;
 using BlogApp.Data.Repositories.Interfaces;
 using BlogApp.Dtos.PostDtos;
 using BlogApp.Models;
@@ -22,26 +23,41 @@ namespace BlogApp.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
+        public async Task<IActionResult> Index(string selectedCategory = null, int pageNumber = 1, int pageSize = 6)
         {
-            var totalPosts = await _postRepository.Posts.CountAsync();
+            var query = _postRepository.Posts;
 
-            var posts = await _postRepository.Posts
+            if (!string.IsNullOrWhiteSpace(selectedCategory))
+            {
+                query = query.Where(p => p.CategoryDto.Name == selectedCategory);
+            }
+
+            var totalPosts = await query.CountAsync();
+
+            var posts = await query
                 .OrderByDescending(p => p.CreatedDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+
+            var allCategories = await _postRepository.Posts
+    .Select(p => p.CategoryDto.Name)
+    .Distinct()
+    .ToListAsync();
 
             var model = new PostViewModel
             {
                 Posts = posts,
                 TotalPosts = totalPosts,
                 PageNumber = pageNumber,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Categories = allCategories,
+                SelectedCategory = selectedCategory
             };
 
             return View(model);
         }
+
 
 
 

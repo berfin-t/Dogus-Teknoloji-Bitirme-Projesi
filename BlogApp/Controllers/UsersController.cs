@@ -45,6 +45,11 @@ namespace BlogApp.Controllers
 
                 if (isUserDto != null)
                 {
+                    if (isUserDto.IsDeleted)
+                    {
+                        ModelState.AddModelError("", "Bu kullanıcı silinmiş. Giriş yapamazsınız.");
+                        return View(model);
+                    }
                     var isUser = new User
                     {
                         Id = isUserDto.Id,
@@ -260,6 +265,22 @@ namespace BlogApp.Controllers
                 return RedirectToAction("Detail", "Users", new { userName = updatedUser.UserName });
             }
             return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var user = await _userRepository.Users.FirstOrDefaultAsync(c => c.Id == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _userRepository.DeleteUserAsync(userId);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            TempData["SuccessMessage"] = "Kullanıcı başarıyla silindi.";
+            return RedirectToAction("Index", "Home");
         }
     }
 }

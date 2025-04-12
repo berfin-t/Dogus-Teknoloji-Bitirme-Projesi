@@ -40,7 +40,7 @@ namespace BlogApp.Data.Repositories.Implementations.EfCore
                 return _context.Posts
                     .AsNoTracking()
                     .Where(p => !p.IsDeleted)
-                    .Include(p => p.Category)
+                    //.Include(p => p.Category)
                     .Include(p => p.User)
                     .ThenInclude(p => p.Comments)                   
                     .ProjectTo<PostDto>(_mapper.ConfigurationProvider);
