@@ -12,6 +12,7 @@ Projeyi [bu bağlantıdan](https://github.com/berfin-t/Dogus-Teknoloji-Bitirme-P
 
 ```bash
 git clone https://github.com/berfin-t/Dogus-Teknoloji-Bitirme-Projesi.git
+```
 
 ### 2. Veritabanını Yükleyin
 
