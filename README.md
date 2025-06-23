@@ -36,3 +36,9 @@ Bu adımların ardından, `.bak` dosyasındaki veritabanı SQL Server veritaban�
 
 Veritabanını başarıyla yükledikten sonra, projeyi açabilir ve çalıştırabilirsiniz. Uygulamanın tüm özellikleri ve fonksiyonları bu veritabanı üzerinden çalışacaktır.
 
+### Kullanılan Teknolojiler
+- MVC
+- .Net 9
+- Bootstrap
+- MsSQL
+
